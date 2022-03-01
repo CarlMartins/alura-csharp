@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Alura.LeilaoOnline.WebApp.Dados;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Alura.LeilaoOnline.WebApp.Models;
-using Alura.LeilaoOnline.WebApp.Dados;
+using Alura.LeilaoOnline.WebApp.Dados.EfCore;
 
 namespace Alura.LeilaoOnline.WebApp.Controllers
 {
@@ -12,25 +13,25 @@ namespace Alura.LeilaoOnline.WebApp.Controllers
     public class LeilaoApiController : ControllerBase
     {
         AppDbContext _context;
-        LeilaoDao _dao;
+        ILeilaoDao _daoComEfCore;
 
         public LeilaoApiController()
         {
             _context = new AppDbContext();
-            _dao = new LeilaoDao();
+            _daoComEfCore = new LeilaoDaoComEfCore();
         }
 
         [HttpGet]
         public IActionResult EndpointGetLeiloes()
         {
-            var leiloes = _dao.BuscarLeiloes();
+            var leiloes = _daoComEfCore.BuscarLeiloes();
             return Ok(leiloes);
         }
 
         [HttpGet("{id}")]
         public IActionResult EndpointGetLeilaoById(int id)
         {
-            var leilao = _dao.BuscarPorId(id);
+            var leilao = _daoComEfCore.BuscarPorId(id);
             if (leilao == null)
             {
                 return NotFound();
@@ -41,26 +42,26 @@ namespace Alura.LeilaoOnline.WebApp.Controllers
         [HttpPost]
         public IActionResult EndpointPostLeilao(Leilao leilao)
         {
-            _dao.Incluir(leilao);
+            _daoComEfCore.Incluir(leilao);
             return Ok(leilao);
         }
 
         [HttpPut]
         public IActionResult EndpointPutLeilao(Leilao leilao)
         {
-            _dao.Alterar(leilao);
+            _daoComEfCore.Alterar(leilao);
             return Ok(leilao);
         }
 
         [HttpDelete("{id}")]
         public IActionResult EndpointDeleteLeilao(int id)
         {
-            var leilao =  _dao.BuscarPorId(id);
+            var leilao =  _daoComEfCore.BuscarPorId(id);
             if (leilao == null)
             {
                 return NotFound();
             }
-            _dao.Excluir(leilao);
+            _daoComEfCore.Excluir(leilao);
             return NoContent();
         }
 

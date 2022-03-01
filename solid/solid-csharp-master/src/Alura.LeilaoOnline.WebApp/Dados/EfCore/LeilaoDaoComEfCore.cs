@@ -3,13 +3,13 @@ using System.Linq;
 using Alura.LeilaoOnline.WebApp.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Alura.LeilaoOnline.WebApp.Dados
+namespace Alura.LeilaoOnline.WebApp.Dados.EfCore
 {
-    public class LeilaoDao
+    public class LeilaoDaoComEfCore : ILeilaoDao
     {
         private readonly AppDbContext _context;
 
-        public LeilaoDao()
+        public LeilaoDaoComEfCore()
         {
             _context = new AppDbContext();
         }
@@ -21,7 +21,7 @@ namespace Alura.LeilaoOnline.WebApp.Dados
                 .ToList();
         }
         
-        private IEnumerable<Categoria> BuscarCategorias()
+        public IEnumerable<Categoria> BuscarCategorias()
         {
             return _context.Categorias.ToList();
         }
