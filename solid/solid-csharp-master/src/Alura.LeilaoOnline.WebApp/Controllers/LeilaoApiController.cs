@@ -1,6 +1,7 @@
 ﻿using Alura.LeilaoOnline.WebApp.Dados;
 using Microsoft.AspNetCore.Mvc;
 using Alura.LeilaoOnline.WebApp.Models;
+using Alura.LeilaoOnline.WebApp.Services;
 
 namespace Alura.LeilaoOnline.WebApp.Controllers
 {
@@ -8,57 +9,67 @@ namespace Alura.LeilaoOnline.WebApp.Controllers
     [Route("/api/leiloes")]
     public class LeilaoApiController : ControllerBase
     {
-        ILeilaoDao _dao;
+        private readonly IAdminService _adminService;
 
-        public LeilaoApiController(ILeilaoDao dao)
+        public LeilaoApiController(IAdminService adminService)
         {
-            _dao = dao;
+            _adminService = adminService;
         }
 
         [HttpGet]
         public IActionResult EndpointGetLeiloes()
         {
-            var leiloes = _dao.BuscarLeiloes();
+            var leiloes = _adminService.ConsultaLeiloes();
             return Ok(leiloes);
         }
 
         [HttpGet("{id}")]
         public IActionResult EndpointGetLeilaoById(int id)
         {
-            var leilao = _dao.BuscarPorId(id);
-            if (leilao == null)
-            {
-                return NotFound();
-            }
+            var leilao = _adminService.ConsultaLeilaoPorId(id);
             return Ok(leilao);
         }
 
         [HttpPost]
         public IActionResult EndpointPostLeilao(Leilao leilao)
         {
-            _dao.Incluir(leilao);
+            _adminService.CadastraLeilao(leilao);
             return Ok(leilao);
         }
 
         [HttpPut]
         public IActionResult EndpointPutLeilao(Leilao leilao)
         {
-            _dao.Alterar(leilao);
+            if (_adminService.ConsultaLeilaoPorId(leilao.Id) == null) return NotFound();
+            _adminService.ModificaLeilao(leilao);
             return Ok(leilao);
         }
 
         [HttpDelete("{id}")]
         public IActionResult EndpointDeleteLeilao(int id)
         {
-            var leilao =  _dao.BuscarPorId(id);
-            if (leilao == null)
-            {
-                return NotFound();
-            }
-            _dao.Excluir(leilao);
+            var leilao = _adminService.ConsultaLeilaoPorId(id);
+            if (leilao == null) return NotFound();
+            _adminService.RemoveLeilao(leilao);
             return NoContent();
         }
 
+        [HttpPost("{id}/pregao")]
+        public IActionResult EndpointIniciaPregao(int id)
+        {
+            var leilao = _adminService.ConsultaLeilaoPorId(id);
+            if (leilao == null) return NotFound();
+            _adminService.IniciaPregaoDoLeilaoComId(id);
+            return Ok();
+        }
 
+        [HttpDelete("{id}/pregao")]
+        public IActionResult EndpointFinalizaPregao(int id)
+        {
+            var leilao = _adminService.ConsultaLeilaoPorId(id);
+            if (leilao == null) return NotFound();
+            _adminService.FinalizaPregaoDoLeilaoComId(id);
+            return Ok();
+        }
     }
 }
