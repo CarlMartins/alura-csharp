@@ -2,18 +2,25 @@ using System;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Alura.LeilaoOnline.WebApp.Controllers;
+using Alura.LeilaoOnline.WebApp.Dados.EfCore;
+using Alura.LeilaoOnline.WebApp.Services;
+using Alura.LeilaoOnline.WebApp.Services.Handlers;
 
 namespace Alura.LeilaoOnline.Testes
 {
     public class LeilaoControllerRemove
     {
+
         [Fact]
         public void DadoLeilaoInexistenteEntaoRetorna404()
         {
             // arrange
-            var idLeilaoInexistente = 11232; // preciso entrar no banco para saber qual é inexistente!! teste deixa de ser automático...
+            var idLeilaoInexistente = 11232; // preciso entrar no banco para saber qual ï¿½ inexistente!! teste deixa de ser automï¿½tico...
             var actionResultEsperado = typeof(NotFoundResult);
-            var controller = new LeilaoController();
+
+            var leilaoDao = new LeilaoDaoComEfCore();
+            var adminService = new DefaultAdminService(leilaoDao);
+            var controller = new LeilaoController(adminService);
 
             // act
             var result = controller.Remove(idLeilaoInexistente);
@@ -26,9 +33,11 @@ namespace Alura.LeilaoOnline.Testes
         public void DadoLeilaoEmPregaoEntaoRetorna405()
         {
             // arrange
-            var idLeilaoEmPregao = 11232; // qual leilao está em pregão???!! 
+            var idLeilaoEmPregao = 11232; // qual leilao estï¿½ em pregï¿½o???!! 
             var actionResultEsperado = typeof(StatusCodeResult);
-            var controller = new LeilaoController();
+            var leilaoDao = new LeilaoDaoComEfCore();
+            var adminService = new DefaultAdminService(leilaoDao);
+            var controller = new LeilaoController(adminService);
 
             // act
             var result = controller.Remove(idLeilaoEmPregao);
@@ -41,9 +50,12 @@ namespace Alura.LeilaoOnline.Testes
         public void DadoLeilaoEmRascunhoEntaoExcluiORegistro()
         {
             // arrange
-            var idLeilaoEmRascunho = 11232; // qual leilao está em rascunho???!!
+            var idLeilaoEmRascunho = 11232; // qual leilao estï¿½ em rascunho???!!
             var actionResultEsperado = typeof(NoContentResult);
-            var controller = new LeilaoController();
+            
+            var leilaoDao = new LeilaoDaoComEfCore();
+            var adminService = new DefaultAdminService(leilaoDao);
+            var controller = new LeilaoController(adminService);
 
             // act
             var result = controller.Remove(idLeilaoEmRascunho);
