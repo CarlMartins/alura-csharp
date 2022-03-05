@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Alura.LeilaoOnline.WebApp.Dados.EfCore
 {
-    public class CategoriaDaoComEfCore : ICategoriaDao
+    public class CategoriaDaoComEfCore : ICategoriaCommand
     {
         private readonly AppDbContext _context;
 
@@ -14,13 +14,13 @@ namespace Alura.LeilaoOnline.WebApp.Dados.EfCore
             _context = context;
         }
         
-        public IEnumerable<Categoria> ConsultaCategorias()
+        public IEnumerable<Categoria> BuscarTodos()
         {
             return _context.Categorias
                 .Include(c => c.Leiloes);
         }
 
-        public Categoria ConsultaCategoriaPorId(int id)
+        public Categoria BuscarPorId(int id)
         {
             return _context.Categorias
                 .Include(c => c.Leiloes)
