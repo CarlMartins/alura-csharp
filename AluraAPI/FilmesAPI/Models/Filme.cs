@@ -4,6 +4,7 @@ namespace AluraAPI.Models
 {
     public class Filme
     {
+        [Key]
         [Required]
         public int Id { get; set; }
         
