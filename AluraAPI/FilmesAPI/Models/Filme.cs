@@ -4,6 +4,9 @@ namespace AluraAPI.Models
 {
     public class Filme
     {
+        [Required]
+        public int Id { get; set; }
+        
         [Required(ErrorMessage = "Título é obrigatório!")]
         public string Titulo { get; set; }
         
