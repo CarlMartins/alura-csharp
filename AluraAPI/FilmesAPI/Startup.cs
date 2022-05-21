@@ -29,7 +29,7 @@ namespace AluraAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<FilmeContext>(opt =>
+            services.AddDbContext<AppDbContext>(opt =>
                 opt.UseMySQL(Configuration.GetConnectionString("FilmeConnection")));
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "FilmesAPI", Version = "v1"}); });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
