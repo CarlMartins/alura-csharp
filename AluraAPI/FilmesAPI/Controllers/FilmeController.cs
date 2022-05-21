@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AluraAPI.Data;
+using AluraAPI.Data.Dtos;
 using AluraAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +20,16 @@ namespace AluraAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult AdicionaFilme([FromBody] Filme filme)
+        public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
         {
+            var filme = new Filme
+            {
+                Titulo = filmeDto.Titulo,
+                Genero = filmeDto.Genero,
+                Duracao = filmeDto.Duracao,
+                Diretor = filmeDto.Diretor
+            };
+            
             _context.Filmes.Add(filme);
             _context.SaveChanges();
             return CreatedAtAction(nameof(RecuperaFilmePorId), new { Id = filme.Id }, filme);
@@ -36,21 +46,34 @@ namespace AluraAPI.Controllers
         {
             var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
 
-            if (filme != null) return Ok(filme);
+            if (filme != null)
+            {
+                var filmeDto = new ReadFilmeDto
+                {
+                    Titulo = filme.Titulo,
+                    Diretor = filme.Diretor,
+                    Duracao = filme.Duracao,
+                    Id = filme.Id,
+                    Genero = filme.Genero,
+                    HoraDaConsulta = DateTime.Now
+                };
+                
+                return Ok(filmeDto);
+            }
 
             return NotFound("Filme não encontrado");
         }
 
-        [HttpPut]
-        public IActionResult AtualizaFilme([FromBody] Filme filme)
+        [HttpPut("{id}")]
+        public IActionResult AtualizaFilme(int id, [FromBody] UpdateFilmeDto filmeDto)
         {
-            var filmeEncontrado = _context.Filmes.FirstOrDefault(f => f.Id == filme.Id);
-            if (filmeEncontrado == null) return NotFound();
+            var filme = _context.Filmes.FirstOrDefault(f => f.Id == id);
+            if (filme == null) return NotFound();
 
-            filmeEncontrado.Titulo = filme.Titulo;
-            filmeEncontrado.Genero = filme.Genero;
-            filmeEncontrado.Duracao = filme.Duracao;
-            filmeEncontrado.Diretor = filme.Diretor;
+            filme.Titulo = filmeDto.Titulo;
+            filme.Genero = filmeDto.Genero;
+            filme.Duracao = filmeDto.Duracao;
+            filme.Diretor = filmeDto.Diretor;
 
             _context.SaveChanges();
             return NoContent();
