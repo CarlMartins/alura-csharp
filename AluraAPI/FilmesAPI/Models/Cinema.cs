@@ -10,5 +10,8 @@ namespace AluraAPI.Models
         
         [Required(ErrorMessage = "O campo de nome é obrigatório!")]
         public string Nome { get; set; }
+
+        public virtual Endereco Endereco { get; set; }
+        public int EnderecoId { get; set; }
     }
 }
