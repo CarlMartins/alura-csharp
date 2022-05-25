@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AluraAPI.Models
@@ -9,5 +10,6 @@ namespace AluraAPI.Models
         public int Id { get; set; }
 
         public string Nome { get; set; }
+        public virtual List<Cinema> Cinemas { get; set; }
     }
 }
