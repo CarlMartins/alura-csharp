@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AluraAPI.Data;
 using AluraAPI.Data.Dtos.Gerente;
@@ -28,6 +29,12 @@ namespace AluraAPI.Controllers
             _context.SaveChanges();
             
             return CreatedAtAction(nameof(RecuperaGerentePorId), new { Id = gerente.Id }, gerente);
+        }
+
+        [HttpGet]
+        public IActionResult RecuperaGerentes()
+        {
+            return Ok(_context.Gerentes);
         }
 
         [HttpGet("{id}")]
