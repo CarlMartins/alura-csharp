@@ -6,6 +6,6 @@ namespace AluraAPI.Data.Dtos.Gerente
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public virtual List<Models.Cinema> Cinemas { get; set; }
+        public virtual object Cinemas { get; set; }
     }
 }
