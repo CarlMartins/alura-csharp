@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -17,5 +18,7 @@ namespace AluraAPI.Models
 
         public virtual Gerente Gerente { get; set; }
         public int GerenteId { get; set; }
+
+        public virtual List<Filme> Filmes { get; set; }
     }
 }
