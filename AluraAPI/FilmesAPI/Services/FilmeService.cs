@@ -4,6 +4,7 @@ using AluraAPI.Data;
 using AluraAPI.Data.Dtos;
 using AluraAPI.Models;
 using AutoMapper;
+using FluentResults;
 
 namespace AluraAPI.Services
 {
@@ -63,29 +64,29 @@ namespace AluraAPI.Services
 
             return null;
         }
-
-        public UpdateFilmeDto AtualizaFilme(int id, UpdateFilmeDto filmeDto)
+        
+        public Result AtualizaFilme(int id, UpdateFilmeDto filmeDto)
         {
             var filme = _context.Filmes.FirstOrDefault(f => f.Id == id);
-            if (filme != null)
+            if (filme == null)
             {
-                _mapper.Map(filmeDto, filme);
-                _context.SaveChanges();
+                return Result.Fail("Filme não encontrado");
             };
-
-            return filmeDto;
+            _mapper.Map(filmeDto, filme);
+            _context.SaveChanges();
+            
+            return Result.Ok();
         }
 
-        public Filme DeletaFilme(int id)
+        public Result DeletaFilme(int id)
         {
             var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
-            if (filme == null) return null;
-            else
-            {
-                _context.Remove(filme);
-                _context.SaveChanges();
-                return filme;
-            }
+            if (filme == null)  return Result.Fail("Filme não encontrado");
+
+            _context.Remove(filme);
+            _context.SaveChanges();
+            return Result.Ok();
+            
         }
     }
 }

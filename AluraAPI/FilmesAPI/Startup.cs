@@ -36,11 +36,11 @@ namespace AluraAPI
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "FilmesAPI", Version = "v1"}); });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<FilmeService>();
-            services.AddScoped<CinemaService>();
-            services.AddScoped<SessaoService>();
-            services.AddScoped<EnderecoService>();
-            services.AddScoped<GerenteService>();
+            services.AddScoped<FilmeService, FilmeService>();
+            services.AddScoped<CinemaService, CinemaService>();
+            services.AddScoped<SessaoService, SessaoService>();
+            services.AddScoped<EnderecoService, EnderecoService>();
+            services.AddScoped<GerenteService, GerenteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

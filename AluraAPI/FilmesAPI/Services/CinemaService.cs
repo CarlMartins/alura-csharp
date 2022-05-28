@@ -4,6 +4,7 @@ using AluraAPI.Data;
 using AluraAPI.Data.Dtos.Cinema;
 using AluraAPI.Models;
 using AutoMapper;
+using FluentResults;
 
 namespace AluraAPI.Services
 {
@@ -54,7 +55,7 @@ namespace AluraAPI.Services
             return null;
         }
 
-        public UpdateCinemaDto AtualizaCinema(int id, UpdateCinemaDto cinemaDto)
+        public Result AtualizaCinema(int id, UpdateCinemaDto cinemaDto)
         {
             Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
             if(cinema != null)
@@ -62,23 +63,23 @@ namespace AluraAPI.Services
                 _mapper.Map(cinemaDto, cinema);
                 _context.SaveChanges();
 
-                return cinemaDto;
+                return Result.Ok();
             }
 
-            return null;
+            return Result.Fail("Cinema não encontrado");
         }
 
-        public Cinema DeletaCinema(int id)
+        public Result DeletaCinema(int id)
         {
             Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
             if (cinema != null)
             {
                 _context.Remove(cinema);
                 _context.SaveChanges();
-                return cinema;
+                return Result.Ok();
             }
 
-            return null;
+            return Result.Fail("Cinema não encontrado");
         }
     }
 }

@@ -6,6 +6,7 @@ using AluraAPI.Data.Dtos.Endereco;
 using AluraAPI.Models;
 using AluraAPI.Services;
 using AutoMapper;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AluraAPI.Controllers
@@ -49,9 +50,9 @@ namespace AluraAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult AtualizaEndereco(int id, [FromBody] UpdateEnderecoDto enderecoDto)
         {
-            ReadEnderecoDto readEnderecoDto = _enderecoService.AtualizaEndereco(id, enderecoDto);
+            Result result = _enderecoService.AtualizaEndereco(id, enderecoDto);
 
-            if (readEnderecoDto != null) return NoContent();
+            if (result.IsSuccess) return NoContent();
             return NotFound();
         }
 
@@ -59,9 +60,9 @@ namespace AluraAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletaEndereco(int id)
         {
-            Endereco endereco = _enderecoService.DeletaEndereco(id);
+            Result result = _enderecoService.DeletaEndereco(id);
 
-            if (endereco != null) return NoContent();
+            if (result.IsSuccess) return NoContent();
             return NotFound();
         }
     }

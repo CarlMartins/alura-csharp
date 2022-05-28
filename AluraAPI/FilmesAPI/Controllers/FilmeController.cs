@@ -6,6 +6,7 @@ using AluraAPI.Data.Dtos;
 using AluraAPI.Models;
 using AluraAPI.Services;
 using AutoMapper;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AluraAPI.Controllers
@@ -49,19 +50,19 @@ namespace AluraAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult AtualizaFilme(int id, [FromBody] UpdateFilmeDto filmeDto)
         {
-            UpdateFilmeDto updateFilmeDto = _filmeService.AtualizaFilme(id, filmeDto);
+            Result result = _filmeService.AtualizaFilme(id, filmeDto);
 
-            if (updateFilmeDto != null) return NoContent();
-            return NotFound();
+            if (result.IsFailed) return NotFound(); 
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeletaFilme([FromRoute] int id)
         {
-            Filme filme = _filmeService.DeletaFilme(id);
+            Result result = _filmeService.DeletaFilme(id);
 
-            if (filme != null) return NoContent();
-            return NotFound();
+            if (result.IsFailed) return NotFound(); 
+            return NoContent();
         }
     }
 }

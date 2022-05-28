@@ -5,6 +5,7 @@ using AluraAPI.Data.Dtos.Cinema;
 using AluraAPI.Data.Dtos.Endereco;
 using AluraAPI.Models;
 using AutoMapper;
+using FluentResults;
 
 namespace AluraAPI.Services
 {
@@ -44,31 +45,30 @@ namespace AluraAPI.Services
         }
 
 
-        public ReadEnderecoDto AtualizaEndereco(int id, UpdateEnderecoDto enderecoDto)
+        public Result AtualizaEndereco(int id, UpdateEnderecoDto enderecoDto)
         {
             Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
             if(endereco != null)
             {
                 _mapper.Map(enderecoDto, endereco);
                 _context.SaveChanges();
-                return _mapper.Map<ReadEnderecoDto>(endereco);
-
+                return Result.Ok();
             }
 
-            return null;
+            return Result.Fail("Endereço não encontrado");
         }
 
-        public Endereco DeletaEndereco(int id)
+        public Result DeletaEndereco(int id)
         {
             Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
             if (endereco != null)
             {
                 _context.Remove(endereco);
                 _context.SaveChanges();
-                return endereco;
+                return Result.Ok();
             }
 
-            return null;
+            return Result.Fail("Endereço não encontrado");
         }
     }
 }

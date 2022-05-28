@@ -5,6 +5,7 @@ using AluraAPI.Data.Dtos.Cinema;
 using AluraAPI.Models;
 using AluraAPI.Services;
 using AutoMapper;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AluraAPI.Controllers
@@ -48,9 +49,9 @@ namespace AluraAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult AtualizaCinema(int id, [FromBody] UpdateCinemaDto cinemaDto)
         {
-            UpdateCinemaDto updateCinemaDto = _cinemaService.AtualizaCinema(id, cinemaDto);
+            Result result = _cinemaService.AtualizaCinema(id, cinemaDto);
 
-            if (updateCinemaDto != null) return NoContent();
+            if (result.IsSuccess) return NoContent();
             return NotFound();
         }
 
@@ -58,9 +59,9 @@ namespace AluraAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletaCinema(int id)
         {
-            Cinema cinema = _cinemaService.DeletaCinema(id);
+            Result result = _cinemaService.DeletaCinema(id);
 
-            if (cinema != null) return NoContent();
+            if (result.IsSuccess) return NoContent();
             return NotFound();
         }
 
