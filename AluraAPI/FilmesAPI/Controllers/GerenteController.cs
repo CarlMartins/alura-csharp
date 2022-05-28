@@ -3,6 +3,7 @@ using System.Linq;
 using AluraAPI.Data;
 using AluraAPI.Data.Dtos.Gerente;
 using AluraAPI.Models;
+using AluraAPI.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,43 +13,36 @@ namespace AluraAPI.Controllers
     [Route("[controller]")]
     public class GerenteController: ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly GerenteService _gerenteService;
 
-        public GerenteController(AppDbContext context, IMapper mapper)
+        public GerenteController(GerenteService gerenteService)
         {
-            _context = context;
-            _mapper = mapper;
+            _gerenteService = gerenteService;
         }
 
         [HttpPost]
         public IActionResult AdicionaGerente(CreateGerenteDto createGerenteDto)
         {
-            var gerente = _mapper.Map<Gerente>(createGerenteDto);
-            _context.Gerentes.Add(gerente);
-            _context.SaveChanges();
+            ReadGerenteDto gerenteDto = _gerenteService.AdicionaGerente(createGerenteDto);
             
-            return CreatedAtAction(nameof(RecuperaGerentePorId), new { Id = gerente.Id }, gerente);
+            return CreatedAtAction(nameof(RecuperaGerentePorId), new { Id = gerenteDto.Id }, gerenteDto);
         }
 
         [HttpGet]
         public IActionResult RecuperaGerentes()
         {
-            return Ok(_context.Gerentes);
+            List<ReadGerenteDto> gerentes = _gerenteService.RecuperaGerentes();
+
+            if (gerentes.Count > 0) return Ok(gerentes);
+            return NotFound();
         }
 
         [HttpGet("{id}")]
         public IActionResult RecuperaGerentePorId(int id)
         {
-            var gerente = _context.Gerentes.FirstOrDefault(gerente => gerente.Id == id);
+            ReadGerenteDto gerente = _gerenteService.RecuperaGerentePorId(id);
 
-            if (gerente != null)
-            {
-                var gerenteDto = _mapper.Map<ReadGerenteDto>(gerente);
-                
-                return Ok(gerenteDto);
-            }
-
+            if (gerente != null) return Ok(gerente);
             return NotFound("Gerente não encontrado");
         }
     }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AluraAPI.Data;
+using AluraAPI.Models;
+using AluraAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,6 +35,12 @@ namespace AluraAPI
                 opt.UseLazyLoadingProxies().UseMySQL(Configuration.GetConnectionString("FilmeConnection")));
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "FilmesAPI", Version = "v1"}); });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddScoped<FilmeService>();
+            services.AddScoped<CinemaService>();
+            services.AddScoped<SessaoService>();
+            services.AddScoped<EnderecoService>();
+            services.AddScoped<GerenteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

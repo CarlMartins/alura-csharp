@@ -2,6 +2,7 @@ using System.Linq;
 using AluraAPI.Data;
 using AluraAPI.Data.Dtos.Sessao;
 using AluraAPI.Models;
+using AluraAPI.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,36 +12,26 @@ namespace AluraAPI.Controllers
     [Route("[controller]")]
     public class SessaoController: ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly SessaoService _sessaoService;
 
-        public SessaoController(AppDbContext context, IMapper mapper)
+        public SessaoController(SessaoService sessaoService)
         {
-            _context = context;
-            _mapper = mapper;
+            _sessaoService = sessaoService;
         }
 
         [HttpPost]
         public IActionResult AdicionaSessao(CreateSessaoDto dto)
         {
-            Sessao sessao = _mapper.Map<Sessao>(dto);
-            _context.Sessoes.Add(sessao);
-            _context.SaveChanges();
-
+            ReadSessaoDto sessao = _sessaoService.AdicionaSessao(dto);
             return CreatedAtAction(nameof(RecuperaSessaoPorId), new {Id = sessao.Id}, sessao);
         }
 
         [HttpGet("{id}")]
         public IActionResult RecuperaSessaoPorId(int id)
         {
-            Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.Id == id);
+            ReadSessaoDto sessao = _sessaoService.RecuperaSessaoPorId(id);
 
-            if (sessao != null)
-            {
-                ReadSessaoDto sessaoDto = _mapper.Map<ReadSessaoDto>(sessao);
-                return Ok(sessaoDto);
-            }
-
+            if (sessao != null) return Ok(sessao);
             return NotFound();
         }
     }
