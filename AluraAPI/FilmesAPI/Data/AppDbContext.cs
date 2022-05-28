@@ -31,7 +31,7 @@ namespace AluraAPI.Data
             
             builder
                 .Entity<Sessao>()
-                .HasOne(sessao => sessao.Filme)
+                .HasOne(sessao => sessao.Cinema)
                 .WithMany(cinema => cinema.Sessoes)
                 .HasForeignKey(sessao => sessao.CinemaId);
         }
