@@ -21,7 +21,7 @@ namespace AluraAPI.Migrations
                     CinemaId1 = table.Column<int>(type: "int", nullable: false),
                     FilmeId = table.Column<int>(type: "int", nullable: false),
                     CinemaId = table.Column<int>(type: "int", nullable: false),
-                    HorarioEncerramento = table.Column<DateTime>(type: "datetime", nullable: false)
+                    HorarioDeEncerramento = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {

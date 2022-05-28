@@ -119,7 +119,7 @@ namespace AluraAPI.Migrations
                     b.Property<int>("FilmeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("HorarioEncerramento")
+                    b.Property<DateTime>("HorarioDeEncerramento")
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
