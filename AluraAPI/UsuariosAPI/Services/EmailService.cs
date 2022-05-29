@@ -2,6 +2,7 @@
 using System;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using UsuariosAPI.Models;
 
@@ -9,6 +10,13 @@ namespace UsuariosAPI.Services
 {
     public class EmailService
     {
+        private IConfiguration _configuration;
+
+        public EmailService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void EnviarEmail(string[] destinatario, 
             string assunto, 
             int usuarioId, 
@@ -20,18 +28,19 @@ namespace UsuariosAPI.Services
             Enviar(emailMessage);
         }
 
-        private MimeMessage Enviar(MimeMessage emailMessage)
+        private void Enviar(MimeMessage emailMessage)
         {
             using (var client = new SmtpClient())
-            {
+            { 
                 try
                 {
-                    client.Connect("Conexao a fazer");
+                    client.Connect(_configuration.GetValue<string>("EmailSettings:SmtpServer"), 
+                        _configuration.GetValue<int>("EmailSettings:Port"), 
+                        true);
+                    client.AuthenticationMechanisms.Remove("XOAUTH2");
+                    client.Authenticate(_configuration.GetValue<string>("EmailSettings:From"),
+                        _configuration.GetValue<string>("EmailSettings:Password"));
                     client.Send(emailMessage);
-                }
-                catch
-                {
-                    throw;
                 }
                 finally
                 {
@@ -41,10 +50,10 @@ namespace UsuariosAPI.Services
             }
         }
 
-        private object CreateEmailBody(Mensagem mensagem)
+        private MimeMessage CreateEmailBody(Mensagem mensagem)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("ADICIONAR O REMETENTE"));
+            emailMessage.From.Add(new MailboxAddress(_configuration.GetValue<string>("EmailSettings:From")));
             emailMessage.To.AddRange(mensagem.Destinatario);
             emailMessage.Subject = mensagem.Assunto;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)

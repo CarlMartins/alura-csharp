@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Web;
 using AutoMapper;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
@@ -34,11 +35,12 @@ namespace UsuariosAPI.Services
             {
                 var activationCode = _userManager
                     .GenerateEmailConfirmationTokenAsync(identityUser).Result;
+                var encodedActivationCode = HttpUtility.UrlEncode(activationCode);
                 _emailService.EnviarEmail(new [] { identityUser.Email }, 
                     "Link de ativação", 
                     identityResult.Id, 
-                    activationCode);
-                return Result.Ok().WithSuccess(activationCode);
+                    encodedActivationCode);
+                return Result.Ok().WithSuccess(encodedActivationCode);
             }
             return Result.Fail("Falha ao cadastrar usuário");
         }
@@ -49,10 +51,12 @@ namespace UsuariosAPI.Services
                 .Users
                 .FirstOrDefault(user => user.Id == request.UsuarioId);
 
-            var identityResult = _userManager
-                .ConfirmEmailAsync(identityUser, request.CodigoAtivacao);
+            var encodedActivationCode = HttpUtility.UrlEncode(request.CodigoAtivacao);
 
-            if (identityResult.Result.Succeeded) return Result.Ok();
+            var identityResult = _userManager
+                .ConfirmEmailAsync(identityUser, encodedActivationCode).Result;
+
+            if (identityResult.Succeeded) return Result.Ok();
             
             return Result.Fail("Falha ao ativar a conta do usuario");
         }
