@@ -20,10 +20,16 @@ namespace UsuariosAPI.Services
         public Result CadastraUsuario(CreateUsuarioDto createDto)
         {
             Usuario usuario = _mapper.Map<Usuario>(createDto);
-            IdentityUser<int> usuarioIdentity = _mapper.Map<IdentityUser<int>>(usuario);
-            var identityResult = _userManager.CreateAsync(usuarioIdentity, createDto.Password);
+            IdentityUser<int> identityUser = _mapper.Map<IdentityUser<int>>(usuario);
+            var identityResult = _userManager
+                .CreateAsync(identityUser, createDto.Password);
 
-            if (identityResult.Result.Succeeded) return Result.Ok();
+            if (identityResult.Result.Succeeded)
+            {
+                var activationCode = _userManager
+                    .GenerateEmailConfirmationTokenAsync(identityUser).Result;
+                return Result.Ok().WithSuccess(activationCode);
+            }
             return Result.Fail("Falha ao cadastrar usuário");
         }
     }
