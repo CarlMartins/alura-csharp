@@ -32,7 +32,10 @@ namespace UsuariosAPI
         {
             services.AddDbContext<UserDbContext>(options =>
                 options.UseMySQL(Configuration.GetConnectionString("UsuarioConnection")));
-            services.AddIdentity<IdentityUser<int>, IdentityRole<int>>()
+            services
+                .AddIdentity<IdentityUser<int>, IdentityRole<int>>(
+                    opt => opt.SignIn.RequireConfirmedAccount = true
+                ) 
                 .AddEntityFrameworkStores<UserDbContext>();
             services.AddScoped<CadastroService, CadastroService>();
             services.AddScoped<LoginService, LoginService>();
