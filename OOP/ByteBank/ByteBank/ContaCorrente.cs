@@ -5,7 +5,17 @@ public class ContaCorrente
     public string Conta { get; set; }
     public int NumeroAgencia { get; set; }
     public string NomeAgencia { get; set; }
-    public double Saldo { get; set; }
+
+    public double Saldo
+    {
+        get { return Saldo; }
+        private set
+        {
+            if (value < 0) return;
+            Saldo = value;
+        }
+    }
+
     public bool Verificador { get; set; }
     public Cliente Cliente { get; set; }
 
