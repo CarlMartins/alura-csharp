@@ -19,4 +19,31 @@ public class ContaCorrente
         Saldo = saldo;
         Verificador = verificador;
     }
+
+    public void Sacar(double valor)
+    {
+        if (Saldo < valor || valor < 0)
+        {
+            return;
+        }
+        Saldo -= valor;
+    }
+
+    public void Depositar(double valor)
+    {
+        Saldo += valor;
+    }
+
+    public bool Transferir(double valor, ContaCorrente destino)
+    {
+        if (Saldo < valor || valor < 0)
+        {
+            return false;
+        }
+
+        Saldo -= valor;
+        destino.Saldo += valor;
+
+        return true;
+    }
 }
