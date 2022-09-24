@@ -43,6 +43,7 @@ cliente.Profissao = "Programador";
 var conta3 = new ContaCorrente(cliente, "10123-X", 23, "Agência Central", 100.00, true);
 
 Console.WriteLine($"Nome do cliente da conta3: {conta3.Cliente.Nome}");
+Console.WriteLine($"Total de contas: {ContaCorrente.TotalDeContasCriadas}");
 
 
 Console.ReadKey();
