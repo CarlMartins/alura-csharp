@@ -1,75 +1,89 @@
-namespace ByteBank;
+﻿// using _05_ByteBank;
 
-public class ContaCorrente
+namespace ByteBank
 {
-    public string Conta { get; set; }
-    public int NumeroAgencia { get; set; }
-    public string NomeAgencia { get; set; }
-    private double _saldo;
-
-    public double Saldo
+    public class ContaCorrente
     {
-        get { return _saldo; }
-        private set
+        public Cliente Titular { get; set; }
+
+        public static int TotalDeContasCriadas { get; private set; }
+
+
+        private int _agencia;
+        public int Agencia
         {
-            if (value < 0) return;
-            _saldo = value;
+            get
+            {
+                return _agencia;
+            }
+            set
+            {
+                if (value <= 0)
+                {
+                    return;
+                }
+
+                _agencia = value;
+            }
         }
-    }
+        public int Numero { get; set; }
 
-    public bool Verificador { get; set; }
-    public Cliente Cliente { get; set; }
-    public static int TotalDeContasCriadas { get; set; }
+        private double _saldo = 100;
 
-    public ContaCorrente(string conta, int numeroAgencia, string nomeAgencia, double saldo,
-        bool verificador)
-    {
-        Conta = conta;
-        NumeroAgencia = numeroAgencia;
-        NomeAgencia = nomeAgencia;
-        Saldo = saldo;
-        Verificador = verificador;
-        TotalDeContasCriadas++;
-    }
-    
-    public ContaCorrente(Cliente cliente, string conta, int numeroAgencia, string nomeAgencia, double saldo,
-        bool verificador)
-    {
-        Cliente = cliente;
-        Conta = conta;
-        NumeroAgencia = numeroAgencia;
-        NomeAgencia = nomeAgencia;
-        Saldo = saldo;
-        Verificador = verificador;
-    }
-
-    public void Sacar(double valor)
-    {
-        if (Saldo < valor || valor < 0)
+        public double Saldo
         {
-            return;
+            get
+            {
+                return _saldo;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    return;
+                }
+
+                _saldo = value;
+            }
         }
 
-        Saldo -= valor;
-    }
 
-    public void Depositar(double valor)
-    {
-        Saldo += valor;
-    }
-
-    public bool Transferir(double valor, ContaCorrente destino)
-    {
-        if (Saldo < valor || valor < 0)
+        public ContaCorrente(int agencia, int numero)
         {
-            return false;
+            Agencia = agencia;
+            Numero = numero;
+
+            TotalDeContasCriadas++;
         }
 
-        Saldo -= valor;
-        destino.Saldo += valor;
 
-        return true;
+        public bool Sacar(double valor)
+        {
+            if (_saldo < valor)
+            {
+                return false;
+            }
+
+            _saldo -= valor;
+            return true;
+        }
+
+        public void Depositar(double valor)
+        {
+            _saldo += valor;
+        }
+
+
+        public bool Transferir(double valor, ContaCorrente contaDestino)
+        {
+            if (_saldo < valor)
+            {
+                return false;
+            }
+
+            _saldo -= valor;
+            contaDestino.Depositar(valor);
+            return true;
+        }
     }
-
-
 }
